@@ -1,7 +1,12 @@
 #include <stdio.h>
 #include <string.h>
+#include <malloc.h>
 
 #include "BlueWorld.h"
+
+uint8_t Parity(uint8_t num) {
+    return 0;
+}
 
 void addInstr(State8080 *state, uint8_t registerVal, uint8_t carry) {
     uint16_t answer = (uint16_t) state->a + (uint16_t) registerVal;
@@ -12,7 +17,7 @@ void addInstr(State8080 *state, uint8_t registerVal, uint8_t carry) {
     state->a = answer & 0xff;
 }
 
-void Emulate8080Op(State8080* state) {
+void Emulate8080(State8080* state) {
     unsigned char *opcode = &state->memory[state->pc];
 
     switch(*opcode) {
@@ -84,70 +89,70 @@ void Emulate8080Op(State8080* state) {
         case 0x3d: break;
         case 0x3e: break;
         case 0x3f: break;
-        case 0x40: break;
-        case 0x41: state->b = state->c; break;    //MOV B,C
-        case 0x42: state->b = state->d; break;    //MOV B,D
-        case 0x43: state->b = state->e; break;    //MOV B,E
-        case 0x44: break;
-        case 0x45: break;
-        case 0x46: break;
-        case 0x47: break;
-        case 0x48: break;
-        case 0x49: break;
-        case 0x4a: break;
-        case 0x4b: break;
-        case 0x4c: break;
-        case 0x4d: break;
-        case 0x4e: break;
-        case 0x4f: break;
-        case 0x50: break;
-        case 0x51: break;
-        case 0x52: break;
-        case 0x53: break;
-        case 0x54: break;
-        case 0x55: break;
-        case 0x56: break;
-        case 0x57: break;
-        case 0x58: break;
-        case 0x59: break;
-        case 0x5a: break;
-        case 0x5b: break;
-        case 0x5c: break;
-        case 0x5d: break;
-        case 0x5e: break;
-        case 0x5f: break;
-        case 0x60: break;
-        case 0x61: break;
-        case 0x62: break;
-        case 0x63: break;
-        case 0x64: break;
-        case 0x65: break;
-        case 0x66: break;
-        case 0x67: break;
-        case 0x68: break;
-        case 0x69: break;
-        case 0x6a: break;
-        case 0x6b: break;
-        case 0x6c: break;
-        case 0x6d: break;
-        case 0x6e: break;
-        case 0x6f: break;
+        case 0x40: state->b = state->b; break; //MOV B,B
+        case 0x41: state->b = state->c; break; //MOV B,C
+        case 0x42: state->b = state->d; break; //MOV B,D
+        case 0x43: state->b = state->e; break; //MOV B,E
+        case 0x44: state->b = state->h; break; //MOV B,H
+        case 0x45: state->b = state->l; break; //MOV B,L
+        case 0x46: state->b = (state->h<<8) | (state->l); break; //MOV B,M
+        case 0x47: state->b = state->a; break; //MOV B, A
+        case 0x48: state->c = state->b; break;
+        case 0x49: state->c = state->c; break;
+        case 0x4a: state->c = state->d; break;
+        case 0x4b: state->c = state->e; break;
+        case 0x4c: state->c = state->h; break;
+        case 0x4d: state->c = state->l; break;
+        case 0x4e: state->c = (state->h<<8) | (state->l); break;
+        case 0x4f: state->c = state->a; break;
+        case 0x50: state->d = state->b; break;
+        case 0x51: state->d = state->c; break;
+        case 0x52: state->d = state->d; break;
+        case 0x53: state->d = state->e; break;
+        case 0x54: state->d = state->h; break;
+        case 0x55: state->d = state->l; break;
+        case 0x56: state->d = (state->h<<8) | (state->l); break;
+        case 0x57: state->d = state->a; break;
+        case 0x58: state->e = state->b; break;
+        case 0x59: state->e = state->c; break;
+        case 0x5a: state->e = state->d; break;
+        case 0x5b: state->e = state->e; break;
+        case 0x5c: state->e = state->h; break;
+        case 0x5d: state->e = state->l; break;
+        case 0x5e: state->e = (state->h<<8) | (state->l); break;
+        case 0x5f: state->e = state->a; break;
+        case 0x60: state->h = state->a; break;
+        case 0x61: state->h = state->a; break;
+        case 0x62: state->h = state->a; break;
+        case 0x63: state->h = state->a; break;
+        case 0x64: state->h = state->a; break;
+        case 0x65: state->h = state->a; break;
+        case 0x66: state->h = (state->h<<8) | (state->l); break;
+        case 0x67: state->h = state->a; break;
+        case 0x68: state->l = state->b; break;
+        case 0x69: state->l = state->d; break;
+        case 0x6a: state->l = state->e; break;
+        case 0x6b: state->l = state->h; break;
+        case 0x6c: state->l = state->l; break;
+        case 0x6d: state->l = state->l; break;
+        case 0x6e: state->l = (state->h<<8) | (state->l); break;
+        case 0x6f: state->l = state->a; break;
         case 0x70: break;
         case 0x71: break;
         case 0x72: break;
         case 0x73: break;
         case 0x74: break;
-        case 0x75: break;
+        case 0x75: break; //MOV M, L
         case 0x76: break;
-        case 0x77: break;
-        case 0x78: break;
-        case 0x79: break;
-        case 0x7a: break;
-        case 0x7b: break;
-        case 0x7c: break;
-        case 0x7d: break;
-        case 0x7e: break;
-        case 0x7f: break;
+        case 0x77: break; // HLT
+        case 0x78: state->a = state->b; break;
+        case 0x79: state->a = state->c; break;
+        case 0x7a: state->a = state->d; break;
+        case 0x7b: state->a = state->e; break;
+        case 0x7c: state->a = state->h; break;
+        case 0x7d: state->a = state->l; break;
+        case 0x7e: state->a = (state->h<<8) | (state->l); break;
+        case 0x7f: state->a = state->a; break;
         case 0x80: addInstr(state, state->b, 0); break; // ADD B
         case 0x81: addInstr(state, state->c, 0); break; // ADD C
         case 0x82: addInstr(state, state->d, 0); break; // ADD D
@@ -163,7 +168,7 @@ void Emulate8080Op(State8080* state) {
             state->cc.p = Parity(answer & 0xff);
             state->a = answer & 0xff;
         }
-        case 0x87: break;
+        case 0x87: addInstr(state, state->a, 0); break;
         case 0x88: break;
         case 0x89: break;
         case 0x8a: break;
@@ -226,7 +231,14 @@ void Emulate8080Op(State8080* state) {
         case 0xc3: break;
         case 0xc4: break;
         case 0xc5: break;
-        case 0xc6: break;
+        case 0xc6: {
+            uint16_t answer = (uint16_t) state->a+ (uint16_t) opcode[1];
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) != 0);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->a = answer & 0xff;
+        } break;
         case 0xc7: break;
         case 0xc8: break;
         case 0xc9: break;
@@ -295,5 +307,9 @@ int main(int argc, char **argv) {
         return 1;
     }
     printf("---------- BlueWorld Intel 8080 Emulator ----------");
+    State8080 *state8080 = malloc(sizeof(State8080));
+    Emulate8080(state8080);
+
+    free(state8080);
     return 0;
 }

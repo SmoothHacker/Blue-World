@@ -28,5 +28,6 @@ typedef struct State8080 {
 } State8080;
 
 void addInstr(State8080* state, uint8_t registerVal, uint8_t carry);
+uint8_t Parity(uint8_t num);
 
 #endif
